@@ -1,4 +1,4 @@
-const CustonAPIError = require('../errors/custom-error');
+const { BadRequestError } = require('../errors');
 const jwt = require('jsonwebtoken');
 
 const login = async (req, res) => {
@@ -8,7 +8,7 @@ const login = async (req, res) => {
   // check in the controller
 
   if (!username || !password) {
-    throw new CustonAPIError('Please provide email and password', 400);
+    throw new BadRequestError('Please provide email and password');
   }
 
   // just for demo, normally provide by DB!!!
@@ -23,14 +23,10 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-  const authHeader = req.headers.authorization;
-  console.log(authHeader);
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new CustonAPIError('No token provided', 401);
-  }
   const luckyNumber = Math.floor(Math.random() * 100);
+
   res.status(200).json({
-    msg: `Hello, Joe Doe`,
+    msg: `Hello, ${req.user.username}`,
     secret: `Here is your authorize data, your lucky number is ${luckyNumber}`,
   });
 };
